@@ -1,0 +1,1318 @@
+<html><head><base href="https://www.gamer.com/">
+<title>Game Room Simulator - Multiplayer</title>
+<style>
+:root {
+  --primary: #0052cc;
+  --secondary: #0065ff;
+  --background: #0f1218;
+  --text: #ffffff;
+}
+
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: var(--background);
+  color: var(--text);
+  margin: 0;
+  padding: 20px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.back-arrow {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px;
+  border-radius: 4px;
+  transition: background 0.3s;
+}
+
+.back-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Update mode selection styles */
+.mode-selection h1 {
+  font-size: 2.5em;
+  text-align: center;
+  margin-bottom: 50px;
+  background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.mode-selection {
+  text-align: center;
+  margin-bottom: 40px;
+  min-height: calc(100vh - 40px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mode-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, 1fr));
+  gap: 40px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+.mode-card {
+  background: #1a1f2b;
+  border-radius: 12px;
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid #2d3544;
+}
+
+.mode-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+}
+
+.mode-card svg {
+  transition: transform 0.4s ease;
+}
+
+.mode-card:hover svg {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.mode-card h3 {
+  margin: 10px 0;
+  color: var(--text);
+}
+
+.mode-card p {
+  color: #68778c;
+  margin: 0;
+}
+
+.room-creation {
+  background: #1a1f2b;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #2d3544;
+}
+
+.room-join {
+  font-size: 0.9em;
+  padding: 15px;
+  background: #1a1f2b;
+  border-radius: 8px;
+  margin-top: 30px;
+  border: 1px solid #2d3544;
+  max-width: 300px;
+  margin: 30px auto 0;
+  display: none;
+}
+
+.input-group {
+  margin-bottom: 15px;
+}
+
+input, select {
+  width: 100%;
+  padding: 12px;
+  background: #2d3544;
+  border: 1px solid #404b61;
+  border-radius: 6px;
+  color: white;
+  margin-top: 5px;
+}
+
+.player-list {
+  background: #1a1f2b;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  border: 1px solid #2d3544;
+}
+
+.game-modes {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.mode-btn {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+  background: #2d3544;
+  color: white;
+}
+
+.mode-btn.active {
+  background: var(--primary);
+  color: white;
+}
+
+.mode-btn.disabled {
+  background: #2d3544;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.game-container {
+  background: #1a1f2b;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+}
+
+.ranking {
+  background: #1a1f2b;
+  padding: 25px;
+  border-radius: 8px;
+  border: 1px solid #2d3544;
+}
+
+.player-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px;
+  background: #2d3544;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.emoji-select {
+  font-size: 24px;
+  background: #2d3544;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: 500;
+  width: 100%;
+}
+
+.btn:hover {
+  background: var(--secondary);
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #1a1f2b;
+  border: 1px solid var(--primary);
+}
+
+.hidden {
+  display: none;
+}
+
+.room-status {
+  font-size: 0.9em;
+  color: #68778c;
+  margin-top: 5px;
+}
+
+.room-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.badge {
+  background: var(--primary);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+}
+
+.fade-out {
+  opacity: 0;
+  transition: opacity 0.5s ease-out;
+}
+
+#creatorInfo {
+  background: #1a1f2b;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 15px;
+  border: 1px solid #2d3544;
+  font-size: 0.9em;
+}
+
+/* Add this to the existing CSS */
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Add this CSS to ensure clean transitions */
+.game-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.game-container h2 {
+  margin-bottom: 30px;
+}
+
+/* Add to existing CSS */
+.game-selection {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.minigame-card {
+  background: #1a1f2b;
+  padding: 30px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+  border: 2px solid #2d3544;
+}
+
+.minigame-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.minigame-card svg {
+  margin: 0 auto;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.minigame-card:hover svg {
+  transform: scale(1.1);
+}
+
+.minigame-card h3 {
+  color: var(--text);
+  font-size: 1.4em;
+  margin-bottom: 10px;
+}
+
+.minigame-card p {
+  color: #68778c;
+  font-size: 0.9em;
+  line-height: 1.4;
+}
+
+.pulse-light {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); }
+  50% { transform: scale(1.05); }
+  0% { transform: scale(0.95); }
+}
+
+/* Add to existing CSS */
+@keyframes spinWheel {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(1800deg); }
+}
+
+.game-wheel-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.game-wheel {
+  width: 300px;
+  height: 300px;
+  position: relative;
+  margin: 0 auto;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+  border: 4px solid #2d3544;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+.wheel-segment {
+  position: absolute;
+  width: 50%;
+  height: 50%;
+  transform-origin: 100% 100%;
+}
+
+.wheel-segment:nth-child(1) {
+  background: #ff6b6b;
+  transform: rotate(0deg) skewY(-30deg);
+  z-index: 1;
+}
+
+.wheel-segment:nth-child(2) {
+  background: #4ecdc4;
+  transform: rotate(180deg) skewY(-30deg);
+  z-index: 1;
+}
+
+.wheel-pointer {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 30px solid #ffd93d;
+  z-index: 2;
+}
+
+.game-title {
+  position: absolute;
+  padding: 10px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.game-icon {
+  width: 40px;
+  height: 40px;
+}
+
+.notification {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 20px 40px;
+  border-radius: 10px;
+  font-size: 1.2em;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 1000;
+}
+
+.notification.show {
+  opacity: 1;
+}
+
+.selected-game {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.8);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s;
+  z-index: 3;
+}
+
+.selected-game.show {
+  opacity: 1;
+}
+
+/* Add these new styles */
+.game-selection-container {
+  padding: 20px;
+}
+
+.game-cards {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
+.game-option {
+  background: #1a1f2b;
+  padding: 30px;
+  border-radius: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+  border: 2px solid #2d3544;
+  width: 200px;
+}
+
+.game-option h3 {
+  margin-top: 15px;
+  color: var(--text);
+  font-size: 1.4em;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.game-option .game-icon {
+  margin: 0 auto;
+  display: block;
+}
+
+.game-option.selected {
+  border-color: var(--primary);
+  transform: scale(1.1);
+  box-shadow: 0 0 20px var(--primary);
+}
+
+/* Add these styles to the existing CSS */
+.game-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
+}
+
+.room-join {
+  position: relative;
+  overflow: hidden;
+  background: rgba(26, 31, 43, 0.8);
+  backdrop-filter: blur(5px);
+}
+
+/* Add media query for mobile/tablet */
+@media (max-width: 768px) {
+  .room-creation {
+    display: none !important;
+  }
+  
+  .mode-cards {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 0 20px;
+  }
+  
+  .mode-selection h1 {
+    font-size: 2em;
+    padding: 0 10px;
+  }
+}
+</style>
+</head>
+<body>
+<button onclick="goBack()" class="back-arrow" id="backButton" style="display:none;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="white">
+    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+  </svg>
+  Back
+</button>
+<div class="container">
+  <div class="mode-selection">
+    <h1>&#x1f3ae; Game Party Central &#x1f3b2;</h1>
+    <div class="mode-cards">
+      <div class="mode-card" onclick="showSinglePlayer()">
+        <svg width="120" height="120" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="60" fill="#4ecdc4"/>
+          <rect x="70" y="60" width="60" height="50" rx="10" fill="#2d3544"/>
+          <circle cx="85" cy="80" r="8" fill="#ff6b6b">
+            <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="115" cy="80" r="8" fill="#ff6b6b">
+            <animate attributeName="opacity" values="1;0.5;1" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <line x1="100" y1="60" x2="100" y2="40" stroke="#2d3544" stroke-width="4"/>
+          <circle cx="100" cy="35" r="5" fill="#ffd93d">
+            <animate attributeName="transform" attributeType="XML" type="rotate" from="0 100 35" to="360 100 35" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <path d="M80 95 Q100 110 120 95" stroke="#fff" stroke-width="3" fill="none"/>
+        </svg>
+        <h3>Single Player</h3>
+        <p>Solo adventures await!</p>
+      </div>
+      <div class="mode-card" onclick="showMultiPlayer()">
+        <svg width="120" height="120" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="60" fill="#ff6b6b"/>
+          <circle cx="80" cy="90" r="20" fill="#4ecdc4"/>
+          <circle cx="120" cy="90" r="20" fill="#ffd93d"/>
+          <circle cx="100" cy="120" r="20" fill="#2d3544"/>
+          <path d="M70 85 L80 65 L90 85" fill="#ffd93d"/>
+          <path d="M110 85 L120 65 L130 85" fill="#4ecdc4"/>
+          <path d="M90 115 L100 95 L110 115" fill="#ff6b6b"/>
+          <circle cx="70" cy="40" r="3" fill="#ffd93d">
+            <animate attributeName="cy" values="40;160" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="130" cy="60" r="3" fill="#4ecdc4">
+            <animate attributeName="cy" values="60;180" dur="1.5s" repeatCount="indefinite"/>
+          </circle>
+          <circle cx="100" cy="50" r="3" fill="#ff6b6b">
+            <animate attributeName="cy" values="50;170" dur="1.8s" repeatCount="indefinite"/>
+          </circle>
+        </svg>
+        <h3>Multiplayer</h3>
+        <p>Join the party!</p>
+      </div>
+    </div>
+    <div class="join-code-section" style="margin-top: 40px; text-align: center;">
+      <p style="color: #68778c; margin-bottom: 15px;">Have a game code? Join directly:</p>
+      <div style="display: flex; gap: 10px; justify-content: center; max-width: 400px; margin: 0 auto;">
+        <input type="text" id="joinCodeInput" placeholder="Enter game code" style="max-width: 250px;">
+        <button class="btn" onclick="joinGameByCode()" style="width: auto;">Join Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="room-creation" id="roomCreation">
+    <h2>Create Room</h2>
+    <div class="input-group">
+      <input type="text" id="creatorName" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <select class="emoji-select" id="creatorEmoji">
+        <option value="&#x1f600;">&#x1f600;</option>
+        <option value="&#x1f60e;">&#x1f60e;</option>
+        <option value="&#x1f98a;">&#x1f98a;</option>
+        <option value="&#x1f438;">&#x1f438;</option>
+        <option value="&#x1f981;">&#x1f981;</option>
+        <option value="&#x1f92a;">&#x1f92a;</option>
+        <option value="&#x1f913;">&#x1f913;</option>
+        <option value="&#x1f984;">&#x1f984;</option>
+        <option value="&#x1f43c;">&#x1f43c;</option>
+        <option value="&#x1f996;">&#x1f996;</option>
+        <option value="&#x1f995;">&#x1f995;</option>
+        <option value="&#x1f419;">&#x1f419;</option>
+        <option value="&#x1f9a9;">&#x1f9a9;</option>
+        <option value="&#x1f9a5;">&#x1f9a5;</option>
+        <option value="&#x1f9a8;">&#x1f9a8;</option>
+      </select>
+    </div>
+    <div class="input-group">
+      <input type="text" id="roomName" placeholder="Room name">
+    </div>
+    <button class="btn" onclick="createRoom()">Create Room</button>
+  </div>
+
+  <div id="creatorInfo" style="display: none; text-align: center; margin-top: 15px; color: #68778c;"></div>
+
+  <div class="room-join" id="roomJoin">
+    <h2>Waiting for Opponents</h2>
+    <p style="text-align: center; color: #68778c;">Share this code with your friends to join: <br><strong></strong></p>
+    <div class="waiting-animation" style="text-align: center; margin: 20px 0;">
+      <svg width="40" height="40" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite;">
+        <circle cx="25" cy="25" r="20" fill="none" stroke="#0052cc" stroke-width="5" stroke-dasharray="80, 200" stroke-dashoffset="0">
+          <animate attributeName="stroke-dashoffset" dur="1.5s" repeatCount="indefinite" from="0" to="502"/>
+        </circle>
+      </svg>
+    </div>
+  </div>
+
+  <div id="roomList" class="room-list hidden">
+    <!-- Rooms will be displayed here -->
+  </div>
+
+  <div class="player-join hidden">
+    <h2>Join Room</h2>
+    <div class="input-group">
+      <input type="text" id="playerName" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <select class="emoji-select" id="playerEmoji">
+        <option value="&#x1f600;">&#x1f600;</option>
+        <option value="&#x1f60e;">&#x1f60e;</option>
+        <option value="&#x1f98a;">&#x1f98a;</option>
+        <option value="&#x1f438;">&#x1f438;</option>
+        <option value="&#x1f981;">&#x1f981;</option>
+        <option value="&#x1f92a;">&#x1f92a;</option>
+        <option value="&#x1f913;">&#x1f913;</option>
+        <option value="&#x1f984;">&#x1f984;</option>
+        <option value="&#x1f43c;">&#x1f43c;</option>
+        <option value="&#x1f996;">&#x1f996;</option>
+        <option value="&#x1f995;">&#x1f995;</option>
+        <option value="&#x1f419;">&#x1f419;</option>
+        <option value="&#x1f9a9;">&#x1f9a9;</option>
+        <option value="&#x1f9a5;">&#x1f9a5;</option>
+        <option value="&#x1f9a8;">&#x1f9a8;</option>
+      </select>
+    </div>
+    <button class="btn" onclick="joinRoom()">Join</button>
+  </div>
+
+  <div class="game-modes hidden">
+    <button class="mode-btn active">Mode 1 (Active)</button>
+    <button class="mode-btn disabled" onclick="showComingSoon()">Mode 2 (Coming Soon)</button>
+  </div>
+
+  <div class="player-list hidden">
+    <h2>Players in Room</h2>
+    <div id="playersList"></div>
+  </div>
+
+  <div class="game-container hidden">
+    <div class="room-header">
+      <h2>Game in Progress</h2>
+      <span class="badge" id="gameStatus"></span>
+    </div>
+    <div id="gameProgress"></div>
+    <button class="btn" onclick="startGame()">Start Game</button>
+  </div>
+
+  <div class="ranking hidden">
+    <h2>Final Ranking</h2>
+    <div id="rankingList"></div>
+    <button class="btn share-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+        <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92c0-1.61-1.31-2.92-2.92-2.92zM18 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM6 13c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm12 7.02c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1z"/>
+      </svg>
+      Share Results
+    </button>
+  </div>
+</div>
+
+<script>const socket = new WebSocket('wss://gameserver-simulation.example.com');
+let rooms = [];
+let currentRoom = null;
+let players = [];
+let gameInProgress = false;
+let playerId = null;
+let reflexRankings = [{
+  name: 'Bot 1',
+  time: 500
+}, {
+  name: 'Bot 2',
+  time: 600
+}, {
+  name: 'Bot 3',
+  time: 700
+}];
+function updateReflexRankings(newTime) {
+  const playerName = document.getElementById('creatorName').value || 'Player';
+  const newRecord = {
+    name: playerName,
+    time: newTime
+  };
+  reflexRankings.push(newRecord);
+  reflexRankings.sort((a, b) => a.time - b.time);
+  reflexRankings = reflexRankings.slice(0, 3);
+  return reflexRankings;
+}
+function displayReflexRankings(rankings) {
+  return `
+    <div class="rankings" style="margin-top: 20px; text-align: left;">
+      <h3>Top 3 Times:</h3>
+      ${rankings.map((rank, i) => `
+        <div style="margin: 5px 0; padding: 8px; background: #2d3544; border-radius: 4px;">
+          ${i + 1}. ${rank.name}: ${rank.time}ms
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+socket.onmessage = function (event) {
+  const data = JSON.parse(event.data);
+  switch (data.type) {
+    case 'ROOM_UPDATE':
+      rooms = data.rooms;
+      updateRoomsList();
+      break;
+    case 'PLAYER_JOINED':
+      if (currentRoom && data.roomId === currentRoom.id) {
+        players = data.players;
+        updatePlayersList();
+      }
+      break;
+    case 'GAME_STATE':
+      updateGameState(data.state);
+      break;
+  }
+};
+function generateFunnyCode() {
+  const adjectives = ['Crazy', 'Silly', 'Funky', 'Wacky', 'Jumpy', 'Dizzy'];
+  const animals = ['Penguin', 'Giraffe', 'Kangaroo', 'Monkey', 'Unicorn'];
+  const numbers = Math.floor(Math.random() * 1000);
+  return `${adjectives[Math.floor(Math.random() * adjectives.length)]}${animals[Math.floor(Math.random() * animals.length)]}${numbers}`;
+}
+function goBack() {
+  if (document.querySelector('.room-join').style.display === 'block') {
+    document.querySelector('.room-join').style.display = 'none';
+    document.querySelector('.room-creation').style.display = 'block';
+    document.getElementById('creatorInfo').style.display = 'none';
+    return;
+  }
+  document.getElementById('backButton').style.display = 'none';
+  document.querySelector('.mode-selection').style.display = 'flex';
+  document.querySelector('.room-creation').style.display = 'none';
+  document.querySelector('.room-join').style.display = 'none';
+  document.querySelector('.game-container').classList.add('hidden');
+  document.querySelector('.game-modes').classList.add('hidden');
+  document.querySelector('.player-join').classList.add('hidden');
+  document.querySelector('.player-list').classList.add('hidden');
+  document.getElementById('creatorInfo').style.display = 'none';
+  document.getElementById('roomName').value = '';
+  document.getElementById('creatorName').value = '';
+  document.getElementById('creatorEmoji').value = '😀';
+}
+function showSinglePlayer() {
+  document.getElementById('backButton').style.display = 'flex';
+  document.querySelector('.mode-selection').style.display = 'none';
+  document.querySelector('.game-container').classList.add('hidden');
+  document.querySelector('.game-modes').classList.add('hidden');
+  document.querySelector('.player-join').classList.add('hidden');
+  document.querySelector('.player-list').classList.add('hidden');
+  document.querySelector('.room-join').style.display = 'none';
+  document.getElementById('creatorInfo').style.display = 'none';
+  document.querySelector('.room-creation').style.display = 'block';
+  document.querySelector('.room-creation').innerHTML = `
+    <h2>Single Player</h2>
+    <div class="input-group">
+      <input type="text" id="creatorName" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <select class="emoji-select" id="creatorEmoji">
+        <option value="😀">😀</option>
+        <option value="😎">😎</option>
+        <option value="🦊">🦊</option>
+        <option value="🐸">🐸</option>
+        <option value="🦁">🦁</option>
+        <option value="🤪">🤪</option>
+        <option value="🤓">🤓</option>
+        <option value="🦄">🦄</option>
+        <option value="🐼">🐼</option>
+        <option value="🦖">🦖</option>
+        <option value="🦕">🦕</option>
+        <option value="🐙">🐙</option>
+        <option value="🦩">🦩</option>
+        <option value="🦥">🦥</option>
+        <option value="🦨">🦨</option>
+      </select>
+    </div>
+    <button class="btn" onclick="startSinglePlayer()">Start Game</button>
+  `;
+}
+function startSinglePlayer() {
+  const playerName = document.getElementById('creatorName').value;
+  if (!playerName) return alert('Please enter your name');
+  document.querySelector('.room-creation').style.display = 'none';
+  const gameContainer = document.querySelector('.game-container');
+  gameContainer.classList.remove('hidden');
+  gameContainer.innerHTML = `
+    <div class="room-header">
+      <h2 style="font-size: 2.5em; text-align: center; margin-bottom: 40px; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+        🎮 Arcade Zone 🕹️
+      </h2>
+    </div>
+    <div class="game-selection">
+      <div class="minigame-card" onclick="startRedLightGame()">
+        <svg width="120" height="120" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="80" fill="#2d3544"/>
+          <circle cx="100" cy="100" r="60" fill="#ff4757" class="pulse-light">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+          </circle>
+          <path d="M70 100 L130 100 M100 70 L100 130" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+        <h3 style="margin-top: 20px">Red Light Reflex</h3>
+        <p>Test your reflexes! Click when the screen turns red.</p>
+      </div>
+      <div class="minigame-card" onclick="startCityQuiz()">
+        <svg width="120" height="120" viewBox="0 0 200 200">
+          <rect x="40" y="80" width="40" height="80" fill="#4ecdc4"/>
+          <rect x="90" y="60" width="40" height="100" fill="#45b7af"/>
+          <rect x="140" y="40" width="40" height="120" fill="#3ca39c"/>
+          <circle cx="100" cy="70" r="25" fill="#ffd93d"/>
+          <path d="M85 40 L115 40 L100 20 Z" fill="#ff6b6b"/>
+        </svg>
+        <h3 style="margin-top: 20px">City Quiz</h3>
+        <p>Test your knowledge about cities around the world!</p>
+      </div>
+    </div>
+  `;
+}
+function startRedLightGame() {
+  const gameContainer = document.querySelector('.game-container');
+  gameContainer.innerHTML = `
+    <div class="red-light-game">
+      <h2>Red Light Reflex</h2>
+      <div id="gameScreen" class="game-screen">
+        <div id="instructions">Click when the screen turns RED!</div>
+      </div>
+      <div id="result" style="display: none;">
+        <h3>Your reaction time:</h3>
+        <div id="reactionTime"></div>
+        <div id="rankings"></div>
+        <button class="btn" onclick="startRedLightGame()" style="margin-top: 20px;">Play Again</button>
+      </div>
+    </div>
+  `;
+  let startTime;
+  const gameScreen = document.getElementById('gameScreen');
+  const result = document.getElementById('result');
+  setTimeout(() => {
+    gameScreen.style.backgroundColor = 'red';
+    startTime = Date.now();
+    gameScreen.onclick = () => {
+      const reactionTime = Date.now() - startTime;
+      const rankings = updateReflexRankings(reactionTime);
+      result.style.display = 'block';
+      document.getElementById('reactionTime').textContent = `${reactionTime}ms`;
+      document.getElementById('rankings').innerHTML = displayReflexRankings(rankings);
+      gameScreen.onclick = null;
+    };
+  }, Math.random() * 3000 + 1000);
+}
+const cityQuizQuestions = [{
+  question: "Where is the Sahara Desert located?",
+  options: ["North Africa", "South America", "Asia"],
+  correct: 0
+}, {
+  question: "Which city is known as the 'City of Light'?",
+  options: ["London", "Paris", "New York"],
+  correct: 1
+}, {
+  question: "In which continent is the city of Cairo?",
+  options: ["Africa", "Asia", "Europe"],
+  correct: 0
+}, {
+  question: "What is the capital city of Japan?",
+  options: ["Seoul", "Tokyo", "Beijing"],
+  correct: 1
+}, {
+  question: "Which city is famous for its canals?",
+  options: ["Venice", "Madrid", "Berlin"],
+  correct: 0
+}, {
+  question: "What is the capital of Australia?",
+  options: ["Sydney", "Melbourne", "Canberra"],
+  correct: 2
+}, {
+  question: "Which desert is located in China?",
+  options: ["Gobi Desert", "Arabian Desert", "Namib Desert"],
+  correct: 0
+}, {
+  question: "Which city hosts the famous Carnival?",
+  options: ["Paris", "Rio de Janeiro", "London"],
+  correct: 1
+}, {
+  question: "What is the largest city in Canada?",
+  options: ["Toronto", "Vancouver", "Montreal"],
+  correct: 0
+}, {
+  question: "Which city is known as the 'Eternal City'?",
+  options: ["Athens", "Rome", "Jerusalem"],
+  correct: 1
+}, {
+  question: "In which city is the Taj Mahal located?",
+  options: ["Agra", "Mumbai", "New Delhi"],
+  correct: 0
+}, {
+  question: "What is the capital of Argentina?",
+  options: ["Santiago", "Buenos Aires", "Lima"],
+  correct: 1
+}, {
+  question: "Which city is famous for the Golden Gate Bridge?",
+  options: ["Los Angeles", "New York", "San Francisco"],
+  correct: 2
+}, {
+  question: "What is the capital of Morocco?",
+  options: ["Rabat", "Casablanca", "Marrakech"],
+  correct: 0
+}, {
+  question: "Which city is located on two continents?",
+  options: ["Istanbul", "Moscow", "Dubai"],
+  correct: 0
+}];
+function startCityQuiz() {
+  let currentQuestion = 0;
+  let score = 0;
+  let correctAnswers = 0;
+  const shuffledQuestions = [...cityQuizQuestions].sort(() => Math.random() - 0.5).slice(0, 5);
+  function showQuestion() {
+    const q = shuffledQuestions[currentQuestion];
+    const gameContainer = document.querySelector('.game-container');
+    gameContainer.innerHTML = `
+      <div class="city-quiz">
+        <h2>City Quiz (Question ${currentQuestion + 1}/5)</h2>
+        <div class="score">Score: ${score}</div>
+        <div class="question-container">
+          <p>${q.question}</p>
+          <div class="options">
+            ${q.options.map((opt, i) => `
+              <button class="btn option-btn" onclick="handleAnswer(${i})">${opt}</button>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  window.handleAnswer = selectedIndex => {
+    const q = shuffledQuestions[currentQuestion];
+    if (selectedIndex === q.correct) {
+      score += 3;
+      correctAnswers++;
+    }
+    currentQuestion++;
+    if (currentQuestion < 5) {
+      showQuestion();
+    } else {
+      showFinalScore();
+    }
+  };
+  function showFinalScore() {
+    const gameContainer = document.querySelector('.game-container');
+    gameContainer.innerHTML = `
+      <div class="quiz-results">
+        <h2>Quiz Complete!</h2>
+        <div class="final-score">
+          <p>Correct Answers: ${correctAnswers}/5</p>
+          <p>Total Score: ${score}/15</p>
+        </div>
+        <button class="btn" onclick="startCityQuiz()">Play Again</button>
+      </div>
+    `;
+  }
+  showQuestion();
+}
+function showMultiPlayer() {
+  document.getElementById('backButton').style.display = 'flex';
+  document.querySelector('.mode-selection').style.display = 'none';
+  if (window.innerWidth > 768) {
+    document.querySelector('.room-creation').innerHTML = `
+      <h2>Create Room</h2>
+      <div class="input-group">
+        <input type="text" id="creatorName" placeholder="Your name">
+      </div>
+      <div class="input-group">
+        <select class="emoji-select" id="creatorEmoji">
+          <option value="😀">😀</option>
+          <option value="😎">😎</option>
+          <option value="🦊">🦊</option>
+          <option value="🐸">🐸</option>
+          <option value="🦁">🦁</option>
+          <option value="🤪">🤪</option>
+          <option value="🤓">🤓</option>
+          <option value="🦄">🦄</option>
+          <option value="🐼">🐼</option>
+          <option value="🦖">🦖</option>
+          <option value="🦕">🦕</option>
+          <option value="🐙">🐙</option>
+          <option value="🦩">🦩</option>
+          <option value="🦥">🦥</option>
+          <option value="🦨">🦨</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <input type="text" id="roomName" placeholder="Room name">
+      </div>
+      <button class="btn" onclick="createRoom()">Create Room</button>
+    `;
+    document.querySelector('.room-creation').style.display = 'block';
+  }
+  document.querySelector('.room-join').style.display = 'none';
+  document.getElementById('creatorInfo').style.display = 'none';
+  document.getElementById('roomName').value = '';
+  document.getElementById('creatorName').value = '';
+  document.getElementById('creatorEmoji').value = '😀';
+}
+function createRoom() {
+  const roomName = document.getElementById('roomName').value;
+  if (!roomName) return alert('Please enter a room name');
+  const creatorName = document.getElementById('creatorName').value || 'Anonymous';
+  const creatorEmoji = document.getElementById('creatorEmoji').value || '😀';
+  document.querySelector('.room-creation').style.display = 'none';
+  const roomJoin = document.querySelector('.room-join');
+  roomJoin.innerHTML = `
+    <h2>Selecting Game...</h2>
+    <div class="game-selection-container">
+      <div class="game-cards">
+        <div class="game-option" id="redLightGame">
+          <svg class="game-icon" width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="50" fill="#2d3544"/>
+            <circle cx="60" cy="60" r="40" fill="#ff4757" class="pulse-light">
+              <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+            </circle>
+            <path d="M40 60 L80 60 M60 40 L60 80" stroke="white" stroke-width="6" stroke-linecap="round"/>
+          </svg>
+          <h3>Red Light Reflex</h3>
+        </div>
+        <div class="game-option" id="cityQuizGame">
+          <svg class="game-icon" width="120" height="120" viewBox="0 0 120 120">
+            <rect x="20" y="40" width="30" height="60" fill="#4ecdc4"/>
+            <rect x="55" y="30" width="30" height="70" fill="#45b7af"/>
+            <rect x="90" y="20" width="30" height="80" fill="#3ca39c"/>
+            <circle cx="60" cy="35" r="15" fill="#ffd93d"/>
+          </svg>
+          <h3>City Quiz</h3>
+        </div>
+      </div>
+    </div>
+  `;
+  roomJoin.style.display = 'block';
+  const gameCards = document.querySelectorAll('.game-option');
+  gameCards.forEach(card => {
+    card.style.animation = 'bounce 1s infinite';
+  });
+  setTimeout(() => {
+    const selectedIndex = Math.floor(Math.random() * 2);
+    const selectedGame = selectedIndex === 0 ? 'Red Light Reflex' : 'City Quiz';
+    gameCards.forEach(card => {
+      card.style.animation = '';
+      card.style.transform = 'scale(0.9)';
+      card.style.opacity = '0.5';
+    });
+    const winner = gameCards[selectedIndex];
+    winner.style.transform = 'scale(1.1)';
+    winner.style.opacity = '1';
+    winner.style.boxShadow = '0 0 20px var(--primary)';
+    const funnyMessages = ["🎮 Get ready for epic gaming shenanigans!", "🎲 Time to show off your gaming superpowers!", "🎯 Warning: Extreme fun loading...", "🎪 Let the party games begin!", "🎨 Preparing your virtual playground..."];
+    const notification = document.createElement('div');
+    notification.className = 'notification';
+    notification.textContent = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+    document.body.appendChild(notification);
+    setTimeout(() => {
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.remove();
+        const funnyCode = generateFunnyCode();
+        const room = {
+          id: funnyCode,
+          name: roomName,
+          players: [{
+            name: creatorName,
+            emoji: creatorEmoji,
+            id: 'creator',
+            isCreator: true
+          }],
+          status: 'waiting',
+          created: new Date(),
+          creator: creatorName,
+          creatorEmoji: creatorEmoji,
+          type: 'multiplayer',
+          selectedGame: selectedGame
+        };
+        rooms.push(room);
+        currentRoom = room;
+        socket.send(JSON.stringify({
+          type: 'CREATE_ROOM',
+          room: room
+        }));
+        roomJoin.innerHTML = `
+          <div class="game-background">
+            ${selectedGame === 'Red Light Reflex' ? `
+              <svg width="400" height="400" viewBox="0 0 200 200" style="opacity: 0.1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <circle cx="100" cy="100" r="80" fill="#2d3544"/>
+                <circle cx="100" cy="100" r="60" fill="#ff4757">
+                  <animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite"/>
+                </circle>
+                <path d="M70 100 L130 100 M100 70 L100 130" stroke="white" stroke-width="8" stroke-linecap="round"/>
+              </svg>
+            ` : `
+              <svg width="400" height="400" viewBox="0 0 200 200" style="opacity: 0.1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                <rect x="40" y="80" width="40" height="80" fill="#4ecdc4"/>
+                <rect x="90" y="60" width="40" height="100" fill="#45b7af"/>
+                <rect x="140" y="40" width="40" height="120" fill="#3ca39c"/>
+                <circle cx="100" cy="70" r="25" fill="#ffd93d"/>
+                <path d="M85 40 L115 40 L100 20 Z" fill="#ff6b6b"/>
+              </svg>
+            `}
+          </div>
+          <div style="position: relative; z-index: 1;">
+            <h2 style="font-size: 2em; margin-bottom: 30px;">Selected Game: ${selectedGame}</h2>
+            <div style="background: rgba(26, 31, 43, 0.9); padding: 30px; border-radius: 15px; box-shadow: 0 0 20px rgba(0,0,0,0.3);">
+              <h3 style="color: #ffd93d; font-size: 1.4em; margin-bottom: 20px;">Room Code:</h3>
+              <p style="font-size: 2em; font-weight: bold; color: #fff; margin-bottom: 20px;">${funnyCode}</p>
+              <p style="color: #68778c;">Share this code with your friends to join!</p>
+            </div>
+            <div class="waiting-animation" style="text-align: center; margin: 20px 0;">
+              <svg width="40" height="40" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite;">
+                <circle cx="25" cy="25" r="20" fill="none" stroke="#0052cc" stroke-width="5" stroke-dasharray="80, 200" stroke-dashoffset="0">
+                  <animate attributeName="stroke-dashoffset" dur="1.5s" repeatCount="indefinite" from="0" to="502"/>
+                </circle>
+              </svg>
+            </div>
+          </div>
+        `;
+        document.getElementById('creatorInfo').textContent = `Created by: ${room.creatorEmoji} ${room.creator}`;
+        document.getElementById('creatorInfo').style.display = 'block';
+      }, 7000);
+    }, 100);
+  }, 3000);
+}
+function joinGameByCode() {
+  const code = document.getElementById('joinCodeInput').value;
+  if (!code) {
+    alert('Please enter a game code');
+    return;
+  }
+  const room = rooms.find(r => r.id === code);
+  if (!room) {
+    alert('Room not found. Please check the code and try again.');
+    return;
+  }
+  document.getElementById('backButton').style.display = 'flex';
+  document.querySelector('.mode-selection').style.display = 'none';
+  document.querySelector('.room-creation').style.display = 'none';
+  const playerJoin = document.querySelector('.player-join');
+  playerJoin.classList.remove('hidden');
+  playerJoin.innerHTML = `
+    <h2>Join Room: ${room.name}</h2>
+    <p style="color: #68778c; margin-bottom: 20px;">Selected Game: ${room.selectedGame}</p>
+    <div class="input-group">
+      <input type="text" id="playerName" placeholder="Your name">
+    </div>
+    <div class="input-group">
+      <select class="emoji-select" id="playerEmoji">
+        <option value="😀">😀</option>
+        <option value="😎">😎</option>
+        <option value="🦊">🦊</option>
+        <option value="🐸">🐸</option>
+        <option value="🦁">🦁</option>
+        <option value="🤪">🤪</option>
+        <option value="🤓">🤓</option>
+        <option value="🦄">🦄</option>
+        <option value="🐼">🐼</option>
+        <option value="🦖">🦖</option>
+        <option value="🦕">🦕</option>
+        <option value="🐙">🐙</option>
+        <option value="🦩">🦩</option>
+        <option value="🦥">🦥</option>
+        <option value="🦨">🦨</option>
+      </select>
+    </div>
+    <button class="btn" onclick="joinExistingRoom('${code}')">Join Game</button>
+  `;
+  document.getElementById('creatorInfo').textContent = `Created by: ${room.creatorEmoji} ${room.creator}`;
+  document.getElementById('creatorInfo').style.display = 'block';
+  currentRoom = room;
+}
+function joinExistingRoom(roomCode) {
+  const playerName = document.getElementById('playerName').value;
+  const playerEmoji = document.getElementById('playerEmoji').value;
+  if (!playerName) {
+    alert('Please enter your name');
+    return;
+  }
+  const room = rooms.find(r => r.id === roomCode);
+  if (!room) {
+    alert('Room not found');
+    return;
+  }
+  const newPlayer = {
+    name: playerName,
+    emoji: playerEmoji,
+    id: `player-${Date.now()}`,
+    isCreator: false
+  };
+  room.players.push(newPlayer);
+  document.querySelector('.player-join').classList.add('hidden');
+  const roomJoin = document.querySelector('.room-join');
+  roomJoin.innerHTML = `
+    <div class="game-background">
+      ${room.selectedGame === 'Red Light Reflex' ? `
+        <svg width="400" height="400" viewBox="0 0 200 200" style="opacity: 0.1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <circle cx="100" cy="100" r="80" fill="#2d3544"/>
+          <circle cx="100" cy="100" r="60" fill="#ff4757">
+            <animate attributeName="opacity" values="0.3;1;0.3" dur="4s" repeatCount="indefinite"/>
+          </circle>
+          <path d="M70 100 L130 100 M100 70 L100 130" stroke="white" stroke-width="8" stroke-linecap="round"/>
+        </svg>
+      ` : `
+        <svg width="400" height="400" viewBox="0 0 200 200" style="opacity: 0.1; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+          <rect x="40" y="80" width="40" height="80" fill="#4ecdc4"/>
+          <rect x="90" y="60" width="40" height="100" fill="#45b7af"/>
+          <rect x="140" y="40" width="40" height="120" fill="#3ca39c"/>
+          <circle cx="100" cy="70" r="25" fill="#ffd93d"/>
+          <path d="M85 40 L115 40 L100 20 Z" fill="#ff6b6b"/>
+        </svg>
+      `}
+    </div>
+    <div style="position: relative; z-index: 1;">
+      <h2>Joined Room: ${room.name}</h2>
+      <div class="player-list" style="margin-top: 20px;">
+        <h3>Players in Room:</h3>
+        ${room.players.map(player => `<div class="player-item">
+            ${player.emoji} ${player.name} ${player.isCreator ? '(Host)' : ''}
+          </div>`).join('')}
+      </div>
+      <p style="text-align: center; color: #68778c; margin-top: 20px;">Waiting for game to start...</p>
+      <div class="waiting-animation" style="text-align: center; margin: 20px 0;">
+        <svg width="40" height="40" viewBox="0 0 50 50" style="animation: rotate 2s linear infinite;">
+          <circle cx="25" cy="25" r="20" fill="none" stroke="#0052cc" stroke-width="5" stroke-dasharray="80, 200" stroke-dashoffset="0">
+            <animate attributeName="stroke-dashoffset" dur="1.5s" repeatCount="indefinite" from="0" to="502"/>
+          </circle>
+        </svg>
+      </div>
+    </div>
+  `;
+  roomJoin.style.display = 'block';
+  socket.send(JSON.stringify({
+    type: 'JOIN_ROOM',
+    roomId: roomCode,
+    player: newPlayer
+  }));
+  socket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    if (data.type === 'PLAYER_JOINED' && data.roomId === roomCode) {
+      const playerList = document.querySelector('.player-list');
+      if (playerList) {
+        playerList.innerHTML = `
+          <h3>Players in Room:</h3>
+          ${data.players.map(player => `<div class="player-item">
+              ${player.emoji} ${player.name} ${player.isCreator ? '(Host)' : ''}
+            </div>`).join('')}
+        `;
+      }
+    }
+  };
+}
+window.addEventListener('resize', function () {
+  if (window.innerWidth <= 768) {
+    document.querySelector('.room-creation').style.display = 'none';
+  } else {
+    if (document.querySelector('.mode-selection').style.display === 'none') {
+      document.querySelector('.room-creation').style.display = 'block';
+    }
+  }
+});</script>
+</body></html>
